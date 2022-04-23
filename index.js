@@ -21,9 +21,18 @@ const run = async () => {
 			const {
 				query: { page, productCount },
 			} = req
-            console.log(page);
-            console.log(productCount, page)
+            const cursor = await productsCollection.find({})
+
+            if(page && productCount){
+                const product = await cursor.skip(+page * +productCount).limit(+productCount).toArray()
+                res.send(product)
+            }
 		})
+        app.get('/productCount',async (req, res)=>{
+            const count = await productsCollection.countDocuments()
+            console.log(count);
+            res.send({count})
+        })
 	} finally {
 		// console.log('final');
 	}
